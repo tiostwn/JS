@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Daftar Siswa</h1>
+      <div class="row">
+        <div class="col-10 offset-1">
+          <form action="javascript:void(0);" method="POST" onsubmit="app.Add()">
+            <input type="text" name="" id="addName" placeholder="Nama" />
+            <input type="text" name="" id="addNomor" placeholder="Kelas" />
+            <input type="text" name="" id="addAbsen" placeholder="Absen" />
+            <input class="btn btn-primary btn-sm" type="submit" value="Add" />
+          </form>
+
+          <div id="formEdit" role="aria-hidden">
+            <form action="javascript:void(0);" method="POST" id="saveEdit">
+              <input type="text" id="editName" />
+              <input type="text" id="editNomor" />
+              <input type="text" id="editAbsen" />
+              <input
+                class="btn btn-secondary btn-sm"
+                type="submit"
+                value="Edit"
+              />
+              <a onclick="CloseInput()" aria-label="Close">x</a>
+            </form>
+          </div>
+          <br />
+          <p id="hitung"></p>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Absen</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody id="nama"></tbody>
+            <tbody id="kelas"></tbody>
+            <tbody id="absen"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var app = new (function(data) {
+        this.getName = document.getElementById("nama");
+        this.getNomor = document.getElementById("kelas");
+        this.getAbsen = document.getElementById("absen");
+        this.Name = []; //untuk menampung data
+        this.Nomor = [];
+        this.Absen = [];
+
+        this.Hitung = function(data) {
+          var use = document.getElementById("hitung");
+          var name = "Siswa";
+
+          if (data) {
+            use.innerHTML = data + " " + name;
+          } else {
+            use.innerHTML = " Tidak ada " + name;
+          }
+        };
+
+        this.ShowData = function() {
+          var data1 = " ";
+          if (this.Name.length > 0) {
+            for (i = 0; i < this.Name.length; i++) {
+              data1 += "<tr>";
+              data1 += "<td>" + this.Name[i] + "</td>";
+              data1 += "<td>" + this.Nomor[i] + "</td>";
+              data1 += "<td>" + this.Absen[i] + "</td>";
+              data1 +=
+                '<td> <button class="btn btn-secondary" onclick="app.Edit (' +
+                i +
+                ')"> Edit </button> <button class="btn btn-danger" onclick="app.Delete (' +
+                i +
+                ')"> Delete </button> </td>';
+
+              data1 += "</tr>";
+            }
+          }
+
+          this.Hitung(this.Name.length);
+          return (this.getName.innerHTML = data1);
+          return (this.getNomor.innerHTML = data1);
+          return (this.getAbsen.innerHTML = data1);
+        };
+
+        this.Add = function() {
+          var getIdAddName = document.getElementById("addName");
+          var getIdAddNomor = document.getElementById("addNomor");
+          var getIdAddAbsen = document.getElementById("addAbsen");
+          var add = getIdAddName.value;
+          var add1 = getIdAddNomor.value;
+          var add2 = getIdAddAbsen.value;
+
+          if (getIdAddName) {
+            this.Name.push(add.trim());
+            this.Nomor.push(add1.trim());
+            this.Absen.push(add2.trim());
+
+            getIdAddName.value = "";
+            getIdAddNomor.value = "";
+            getIdAddAbsen.value = "";
+            this.ShowData();
+          }
+        };
+
+        this.Edit = function(item) {
+          var edit = document.getElementById("editName"); //mengambil data pada data
+          var edit1 = document.getElementById("editNomor"); //mengambil data pada data
+          var edit2 = document.getElementById("editAbsen"); //mengambil data pada data
+          edit.value = this.Name[item];
+          edit1.value = this.Nomor[item];
+          edit2.value = this.Absen[item];
+          document.getElementById("formEdit").style.display = "block";
+          yurod = this;
+          document.getElementById("saveEdit").onsubmit = function() {
+            var newName = edit.value;
+            var newNomor = edit1.value;
+            var newAbsen = edit2.value;
+            if (newName) {
+              yurod.Name.splice(item, 1, newName.trim());
+              yurod.Nomor.splice(item, 1, newNomor.trim());
+              yurod.Absen.splice(item, 1, newAbsen.trim());
+              yurod.ShowData();
+              CloseInput();
+            }
+          };
+        };
+
+        this.Delete = function(item) {
+          this.Name.splice(item, 1);
+          this.Nomor.splice(item, 1);
+          this.Absen.splice(item, 1);
+
+          this.ShowData();
+        };
+      })();
+
+      function CloseInput() {
+        document.getElementById("formEdit").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
